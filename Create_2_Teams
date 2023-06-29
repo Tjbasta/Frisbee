@@ -1,10 +1,9 @@
 let scoresDiff = 4;
 let BinalDiff = 4;
-let teamSizesDiff = 0;
 let teams, throwersScore, runnersScore, scores, BinalScore;
 let j = 0;
 
-while (scoresDiff > 2 || BinalDiff > 1.5 || teamSizesDiff !== 0) {
+while (scoresDiff > 2 || BinalDiff > 1.5) {
   const players = playerTable.data.filter(player => player.Present);
 
   console.log('picking players from table!');
@@ -78,11 +77,11 @@ while (scoresDiff > 2 || BinalDiff > 1.5 || teamSizesDiff !== 0) {
       }
     }
 
+
     scoresDiff = Math.abs(Math.min(...scores) - Math.max(...scores));
     BinalDiff = Math.abs(Math.min(...BinalScore) - Math.max(...BinalScore));
   }
 
-  teamSizesDiff = Math.abs(teams[0].length - teams[1].length);
   j++; // Increment the loop counter
 }
 
@@ -99,11 +98,9 @@ return {
   scoresDiff: scoresDiff,
   BinalScore: BinalScore,
   BinalDiff: BinalDiff,
-  teamSizesDiff: teamSizesDiff,
   loopCount: j // Include the loop count in the returned object
 };
-
-
+``
 
 
 
