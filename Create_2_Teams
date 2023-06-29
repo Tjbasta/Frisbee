@@ -84,7 +84,6 @@ return {
 
 
 
-
 const players = playerTable.data.filter(player => player.Present);
 
 console.log('picking players from table!');
