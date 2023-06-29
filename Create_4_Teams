@@ -1,0 +1,87 @@
+let teamSizesDiff = 2;
+let scoresDiff = 71;
+let teams, throwersScore, runnersScore, scores, teamSizes;
+let players, runnersDiff;
+
+while (teamSizesDiff > 1 || scoresDiff > 1.5) {
+  players = playerTable.data.filter(player => player.Present);
+
+  console.log('picking players from table!');
+  console.log('sorting players!');
+
+  players.sort((a, b) => b.Runner - a.Runner);
+
+  for (let i = players.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [players[i], players[j]] = [players[j], players[i]];
+  }
+
+  teams = [[], [], [], []];
+  throwersScore = [0, 0, 0, 0];
+  runnersScore = [0, 0, 0, 0];
+  scores = [0, 0, 0, 0];
+  teamSizes = [0, 0, 0, 0];
+
+  for (let i = 0; i < players.length; i++) {
+    const currentPlayer = players[i];
+    const throwersDiff = Math.min(...throwersScore) - Math.max(...throwersScore);
+    const runnersDiff = Math.min(...runnersScore) - Math.max(...runnersScore);
+
+    if (throwersDiff === 0 && runnersDiff === 0) {
+      const lowestScoreTeamIndex = scores.indexOf(Math.min(...scores));
+      teams[lowestScoreTeamIndex].push(currentPlayer);
+      scores[lowestScoreTeamIndex] += currentPlayer.Score;
+      throwersScore[lowestScoreTeamIndex] += currentPlayer.Thrower;
+      runnersScore[lowestScoreTeamIndex] += currentPlayer.Runner;
+      teamSizes[lowestScoreTeamIndex]++;
+    } else {
+      if (throwersDiff > runnersDiff) {
+        const lowestThrowersTeamIndex = throwersScore.indexOf(Math.min(...throwersScore));
+        teams[lowestThrowersTeamIndex].push(currentPlayer);
+        scores[lowestThrowersTeamIndex] += currentPlayer.Score;
+        throwersScore[lowestThrowersTeamIndex] += currentPlayer.Thrower;
+        runnersScore[lowestThrowersTeamIndex] += currentPlayer.Runner;
+        teamSizes[lowestThrowersTeamIndex]++;
+      } else {
+        const lowestRunnersTeamIndex = runnersScore.indexOf(Math.min(...runnersScore));
+        teams[lowestRunnersTeamIndex].push(currentPlayer);
+        scores[lowestRunnersTeamIndex] += currentPlayer.Score;
+        throwersScore[lowestRunnersTeamIndex] += currentPlayer.Thrower;
+        runnersScore[lowestRunnersTeamIndex] += currentPlayer.Runner;
+        teamSizes[lowestRunnersTeamIndex]++;
+      }
+    }
+  }
+
+  scoresDiff = Math.abs(Math.min(...scores) - Math.max(...scores));
+  runnersDiff = Math.abs(Math.min(...runnersScore) - Math.max(...runnersScore));
+  teamSizesDiff = Math.abs(Math.min(...teamSizes) - Math.max(...teamSizes));
+
+  // If teamSizesDiff is still greater than 1, the loop will restart
+}
+
+const allPlayers = players.map((player, index) => [player.Name, player.Score, teams.findIndex(team => team.includes(player)) + 1]);
+
+const playerNames = allPlayers.map(player => player[0]);
+const playerScores = allPlayers.map(player => player[1]);
+const playerTeamNumbers = allPlayers.map(player => player[2]);
+const ID = Array.from({ length: allPlayers.length }, (_, index) => index + 1);
+
+return {
+  team1: teams[0],
+  team2: teams[1],
+  team3: teams[2],
+  team4: teams[3],
+  scores: scores,
+  throwersScore: throwersScore,
+  runnersScore: runnersScore,
+  scoresDiff: scoresDiff,
+  runnersDiff: runnersDiff,
+  teamSizesDiff: teamSizesDiff,
+  playerNames: playerNames,
+  playerScores: playerScores,
+  playerTeamNumbers: playerTeamNumbers,
+  ID: ID
+};
+
+``
