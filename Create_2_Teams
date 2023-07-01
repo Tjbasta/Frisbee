@@ -1,11 +1,5 @@
 
 
-
-
-
-
-
-
 7/1 with bottom 2 combined 
 
 let scoresDiff = 4;
@@ -23,7 +17,7 @@ function shuffle(array) {
   }
 }
 
-while ((scoresDiff > 1.5 || BinalDiff > 1.5) && j < maxIterations) {
+while ((scoresDiff > 1.25 || BinalDiff > 1.5) && j < maxIterations) {
   const players = playerTable.data.filter(player => player.Present);
   
   console.log('picking players from table!');
@@ -100,7 +94,7 @@ if (j >= maxIterations) {
 
   z = 0;
 
-  while ((scoresDiff > 1.5 || BinalDiff > 1.5) && z < maxIterations) {
+  while ((scoresDiff > 1 || BinalDiff > 1.5) && z < maxIterations) {
     const players = playerTable.data.filter(player => player.Present);
   
     console.log('picking players from table!');
@@ -182,8 +176,10 @@ if (j >= maxIterations) {
 }
 
 
-shuffle(teams[0]);
-shuffle(teams[1]);
+//shuffle(teams[0]);
+//shuffle(teams[1]);
+//teams[0].sort((a, b) => b.Score - a.Score);
+//teams[1].sort((a, b) => b.Score - a.Score);
 
 throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
 runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
@@ -201,6 +197,7 @@ return {
   loopCount1: j,
   loopCount2: z// Include the loop count in the returned object
 };
+
 
 ``
 
