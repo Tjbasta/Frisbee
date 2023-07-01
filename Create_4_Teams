@@ -192,3 +192,64 @@ return {
 };
 
 ``
+
+
+
+
+
+
+
+
+
+old determicistic code
+
+const players = playerTable.data.filter(player => player.Present);
+
+console.log('picking players from table!');
+console.log('sorting players!');
+
+// sort players by overall score in descending order
+players.sort((a, b) => b.Runner - a.Runner);
+
+// initialize list for teams
+const teams = [[], [], [], []];
+
+// initialize variables to track number of players who can throw and run and aggregate scores
+let throwersScore = [0, 0, 0, 0];
+let runnersScore = [0, 0, 0, 0];
+let scores = [0, 0, 0, 0];
+
+// add players to teams, prioritizing score and balance
+for (let i = 0; i < players.length; i++) { 
+  const currentPlayer = players[i];
+
+  // find the team with the lowest total runnersScore
+  let lowestRunnersScore = Infinity;
+  let targetTeamIndex = 0;
+  for (let j = 0; j < teams.length; j++) {
+    if (runnersScore[j] < lowestRunnersScore) {
+      lowestRunnersScore = runnersScore[j];
+      targetTeamIndex = j;
+    }
+  }
+
+  // add the player to the team with the lowest total runnersScore
+  teams[targetTeamIndex].push(currentPlayer);
+  scores[targetTeamIndex] += currentPlayer.Score;
+  throwersScore[targetTeamIndex] += currentPlayer.Thrower;
+  runnersScore[targetTeamIndex] += currentPlayer.Runner;
+}
+
+function shuffleTeam(team) {
+  for (let i = team.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [team[i], team[j]] = [team[j], team[i]];
+  }
+}
+
+shuffleTeam(teams[0]);
+shuffleTeam(teams[1]);
+shuffleTeam(teams[2]);
+shuffleTeam(teams[3]);
+
+return { team1: teams[0], team2: teams[1], team3: teams[2], team4: teams[3], scores, throwersScore, runnersScore };
