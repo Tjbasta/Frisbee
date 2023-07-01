@@ -182,8 +182,8 @@ if (j >= maxIterations) {
 }
 
 
-//shuffle(teams[0]);
-//shuffle(teams[1]);
+shuffle(teams[0]);
+shuffle(teams[1]);
 
 throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
 runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
