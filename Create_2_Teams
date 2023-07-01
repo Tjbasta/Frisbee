@@ -176,8 +176,8 @@ if (j >= maxIterations) {
 }
 
 
-//shuffle(teams[0]);
-//shuffle(teams[1]);
+shuffle(teams[0]);
+shuffle(teams[1]);
 //teams[0].sort((a, b) => b.Score - a.Score);
 //teams[1].sort((a, b) => b.Score - a.Score);
 
