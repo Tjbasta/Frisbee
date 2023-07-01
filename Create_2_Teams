@@ -1,3 +1,175 @@
+7/1 with bottom 2 combined 
+
+let scoresDiff = 4;
+let BinalDiff = 4;
+let teams, throwersScore, runnersScore, scores, BinalScore;
+let j = 0;
+
+const maxIterations = 1000;
+
+while ((scoresDiff > 1.5 || BinalDiff > 1.5) && j < maxIterations) {
+  const players = playerTable.data.filter(player => player.Present);
+
+  console.log('picking players from table!');
+  console.log('sorting players by Runner attribute!');
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  players.sort((a, b) => b.Runner - a.Runner); // Sorting by Runner attribute
+
+  teams = [[], []];
+  throwersScore = [0, 0];
+  runnersScore = [0, 0];
+  scores = [0, 0];
+  BinalScore = [0, 0];
+
+  // Assign top 4 players to teams based on Runner score
+  for (let i = 0; i < 4; i++) {
+    const currentPlayer = players[i];
+    const teamIndex = i % 2; // Alternately assign to teams
+
+    // Assign player to the chosen team and update scores
+    teams[teamIndex].push(currentPlayer);
+    scores[teamIndex] += currentPlayer.Score;
+    throwersScore[teamIndex] += currentPlayer.Thrower;
+    runnersScore[teamIndex] += currentPlayer.Runner;
+    BinalScore[teamIndex] += currentPlayer.Binal;
+  }
+
+  // Remove top 4 players from players array
+  players.splice(0, 4);
+  
+  // Shuffle remaining players
+  shuffle(players);
+
+  // Sorting remaining players by Thrower attribute
+  players.sort((a, b) => b.Thrower - a.Thrower);
+
+  // Continue with the rest of the code as before
+  for (let i = 0; i < players.length; i++) {
+    const currentPlayer = players[i];
+
+    const throwersDiff = Math.abs(throwersScore[0] - throwersScore[1]);
+    const runnersDiff = Math.abs(runnersScore[0] - runnersScore[1]);
+
+    let teamIndex;
+
+    // If throwers and runners are balanced, assign based on total score
+    if (throwersDiff === 0 && runnersDiff === 0) {
+      teamIndex = scores[0] <= scores[1] ? 0 : 1;
+    } 
+    // If throwers are less balanced than runners, assign based on thrower score
+    else if (throwersDiff > runnersDiff) {
+      teamIndex = throwersScore[0] <= throwersScore[1] ? 0 : 1;
+    } 
+    // If runners are less balanced or equal to throwers, assign based on runner score
+    else {
+      teamIndex = runnersScore[0] <= runnersScore[1] ? 0 : 1;
+    }
+
+    // Assign player to the chosen team and update scores
+    teams[teamIndex].push(currentPlayer);
+    scores[teamIndex] += currentPlayer.Score;
+    throwersScore[teamIndex] += currentPlayer.Thrower;
+    runnersScore[teamIndex] += currentPlayer.Runner;
+    BinalScore[teamIndex] += currentPlayer.Binal;
+
+    scoresDiff = Math.abs(scores[0] - scores[1]);
+    BinalDiff = Math.abs(BinalScore[0] - BinalScore[1]);
+  }
+
+  j++; // Increment the loop counter
+}
+
+if (j >= maxIterations) {
+  console.log("Maximum iterations reached. Running original algorithm.");
+
+  // Reset variables for original algorithm
+  teams = [[], []];
+  throwersScore = [0, 0];
+  runnersScore = [0, 0];
+  scores = [0, 0];
+  BinalScore = [0, 0];
+
+  // Original player assignment logic
+  const players = playerTable.data.filter(player => player.Present);
+
+  shuffle(players);
+
+  players.sort((a, b) => b.Runner - a.Runner);
+
+  for (let i = 0; i < players.length; i++) {
+    const currentPlayer = players[i];
+
+    const throwersDiff = Math.abs(throwersScore[0] - throwersScore[1]);
+    const runnersDiff = Math.abs(runnersScore[0] - runnersScore[1]);
+
+    let teamIndex;
+
+    // If throwers and runners are balanced, assign based on total score
+    if (throwersDiff === 0 && runnersDiff === 0) {
+      teamIndex = scores[0] <= scores[1] ? 0 : 1;
+    } 
+    // If throwers are less balanced than runners, assign based on thrower score
+    else if (throwersDiff > runnersDiff) {
+      teamIndex = throwersScore[0] <= throwersScore[1] ? 0 : 1;
+    } 
+    // If runners are less balanced or equal to throwers, assign based on runner score
+    else {
+      teamIndex = runnersScore[0] <= runnersScore[1] ? 0 : 1;
+    }
+
+    // Assign player to the chosen team and update scores
+    teams[teamIndex].push(currentPlayer);
+    scores[teamIndex] += currentPlayer.Score;
+    throwersScore[teamIndex] += currentPlayer.Thrower;
+    runnersScore[teamIndex] += currentPlayer.Runner;
+    BinalScore[teamIndex] += currentPlayer.Binal;
+
+    scoresDiff = Math.abs(scores[0] - scores[1]);
+    BinalDiff = Math.abs(BinalScore[0] - BinalScore[1]);
+  }
+
+}
+
+return {
+  team1: teams[0],
+  team2: teams[1],
+  scores: scores,
+  throwersScore: throwersScore,
+  runnersScore: runnersScore,
+  scoresDiff: scoresDiff,
+  BinalScore: BinalScore,
+  BinalDiff: BinalDiff,
+  loopCount: j // Include the loop count in the returned object
+};
+
+
+``
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 7/1
 
 let scoresDiff = 4;
