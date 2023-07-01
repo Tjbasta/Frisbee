@@ -73,6 +73,10 @@ const playerScores = allPlayers.map(player => player[1]);
 const playerTeamNumbers = allPlayers.map(player => player[2]);
 const ID = Array.from({ length: allPlayers.length }, (_, index) => index + 1);
 
+throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
+runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
+scores = scores.map(score => Math.round(score * 10) / 10);
+
 return {
   team1: teams[0],
   team2: teams[1],
