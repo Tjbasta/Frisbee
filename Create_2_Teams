@@ -161,13 +161,15 @@ console.log(`Second team players: ${teams[1].length}`);
 console.log(`Score diff: ${Math.abs(scores[0] - scores[1])}`);
 console.log(`Binal diff: ${Math.abs(BinalScore[0] - BinalScore[1])}`);
 
-teams[0].sort((a, b) => b.Score - a.Score);
-teams[1].sort((a, b) => b.Score - a.Score);
+//teams[0].sort((a, b) => b.Score - a.Score);
+//teams[1].sort((a, b) => b.Score - a.Score);
+
+shuffle(teams[0]);
+shuffle(teams[1]);
 
 throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
 runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
 scores = scores.map(score => Math.round(score * 10) / 10);
-
 
 return {
   team1: teams[0],
