@@ -78,6 +78,11 @@ throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
 runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
 scores = scores.map(score => Math.round(score * 10) / 10);
 
+teams[0].sort((a, b) => b.Score - a.Score);
+teams[1].sort((a, b) => b.Score - a.Score);
+teams[2].sort((a, b) => b.Score - a.Score);
+teams[3].sort((a, b) => b.Score - a.Score);
+
 shuffleArray(teams[0]);
 shuffleArray(teams[1]);
 shuffleArray(teams[2]);
