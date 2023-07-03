@@ -17,21 +17,28 @@ function shuffle(array) {
   }
 }
 
-while ((scoresDiff > 1.25 || BinalDiff > 1.5 || Math.abs(teamSizes[0] - teamSizes[1]) > 2) && j < maxIterations) {
-  const players = playerTable.data.filter(player => player.Present);
+while ((scoresDiff > 1 || BinalDiff > 1.5) && j < maxIterations) {
+  let playersCopy = [...players];  // Create a copy of players to manipulate
+  
+  playersCopy.sort((a, b) => b.Runner - a.Runner);
+  
+  // Randomize top 4 runners
+  const topRunners = playersCopy.splice(0, 4); // Remove the top 4 runners from the pool
+  shuffle(topRunners);
 
-  players.sort((a, b) => b.Runner - a.Runner);
+  let randomizedPlayers = [...topRunners, ...playersCopy]; // Combine top runners and rest of the players
 
   teams = [[], []];
   throwersScore = [0, 0];
   runnersScore = [0, 0];
   scores = [0, 0];
   BinalScore = [0, 0];
-  teamSizes = [0, 0];
+  let teamSizes = [0, 0];
 
+  // Distribute the top 4 players
   for (let i = 0; i < 4; i++) {
     const teamIndex = i % 2; 
-    const currentPlayer = players[i];
+    const currentPlayer = randomizedPlayers[i];
 
     teams[teamIndex].push(currentPlayer);
     scores[teamIndex] += currentPlayer.Score;
@@ -41,21 +48,17 @@ while ((scoresDiff > 1.25 || BinalDiff > 1.5 || Math.abs(teamSizes[0] - teamSize
     teamSizes[teamIndex]++;
   }
 
-  players.splice(0, 4);
-  shuffle(players);
-  players.sort((a, b) => b.Thrower - a.Thrower);
+  randomizedPlayers.splice(0, 4); // Remove the top 4 players from the pool
+  
+  shuffle(randomizedPlayers);  // Shuffle remaining players
 
-  for (let i = 0; i < players.length; i++) {
-    const currentPlayer = players[i];
-    const throwersDiff = Math.abs(throwersScore[0] - throwersScore[1]);
-    const runnersDiff = Math.abs(runnersScore[0] - runnersScore[1]);
-
+  // Distribute the remaining players
+  for (let i = 0; i < randomizedPlayers.length; i++) {
+    const currentPlayer = randomizedPlayers[i];
     let teamIndex;
 
-    if (throwersDiff === 0 && runnersDiff === 0) {
-      teamIndex = teamSizes[0] < teamSizes[1] ? 0 : 1;
-    } else if (throwersDiff > runnersDiff) {
-      teamIndex = teamSizes[0] < teamSizes[1] ? 0 : 1;
+    if (teamSizes[0] === teamSizes[1]) {
+      teamIndex = scores[0] <= scores[1] ? 0 : 1;
     } else {
       teamIndex = teamSizes[0] < teamSizes[1] ? 0 : 1;
     }
@@ -71,7 +74,7 @@ while ((scoresDiff > 1.25 || BinalDiff > 1.5 || Math.abs(teamSizes[0] - teamSize
     BinalDiff = Math.abs(BinalScore[0] - BinalScore[1]);
   }
 
-  j++; 
+  j++;
 }
 
 if (j >= maxIterations) {
@@ -115,7 +118,7 @@ if (j >= maxIterations) {
   if (z >= maxIterations) {
     console.log("Maximum iterations reached. Running third algorithm.");
 
-    while ((scoresDiff > 1.75 || BinalDiff > 1.5 || Math.abs(teamSizes[0] - teamSizes[1]) > 2) && x < maxIterations) {
+    while ((scoresDiff > 2 || BinalDiff > 1.5 || Math.abs(teamSizes[0] - teamSizes[1]) > 2) && x < maxIterations) {
       teams = [[], []];
       throwersScore = [0, 0];
       runnersScore = [0, 0];
@@ -161,11 +164,11 @@ console.log(`Second team players: ${teams[1].length}`);
 console.log(`Score diff: ${Math.abs(scores[0] - scores[1])}`);
 console.log(`Binal diff: ${Math.abs(BinalScore[0] - BinalScore[1])}`);
 
-//teams[0].sort((a, b) => b.Score - a.Score);
-//teams[1].sort((a, b) => b.Score - a.Score);
+teams[0].sort((a, b) => b.Score - a.Score);
+teams[1].sort((a, b) => b.Score - a.Score);
 
-shuffle(teams[0]);
-shuffle(teams[1]);
+//shuffle(teams[0]);
+//shuffle(teams[1]);
 
 throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
 runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
@@ -181,9 +184,8 @@ return {
   BinalDiff: BinalDiff,
   scoresDiff: scoresDiff,
   loopCount1: j,
-  loopCount2: z// Include the loop count in the returned object
+  loopCount2: z
 };
-
 
 ``
 
