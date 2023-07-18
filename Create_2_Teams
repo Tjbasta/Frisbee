@@ -1,3 +1,139 @@
+7/18
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+let teamSizesDiff = 2;
+let scoresDiff = 71;
+let runnersDiff = 0;
+let BinalDiff = 4;
+let teams, throwersScore, runnersScore, scores, teamSizes;
+let players;
+let j = 0; // Counter variable to track the number of iterations
+let BinalScore; // Declare BinalScore array
+let maxIterations = 5000; // Maximum iterations to prevent an infinite loop
+let runnersDiffThreshold = 0.25;
+let scoresDiffThreshold = 0.25;
+let BinalDiffThreshold = 1;
+let R = 0; // Variable to track the number of times thresholds are increased
+
+while ((teamSizesDiff > 1 || scoresDiff > scoresDiffThreshold || runnersDiff > runnersDiffThreshold || BinalDiff > BinalDiffThreshold) && j < maxIterations) {
+  j++; // Increment the counter variable
+
+  players = playerTable.data.filter(player => player.Present);
+
+  console.log('picking players from table!');
+  console.log('sorting players!');
+
+  // First, sort the players by their runner score.
+  players.sort((a, b) => b.Runner - a.Runner);
+
+  teams = [[], []];
+  throwersScore = [0, 0];
+  runnersScore = [0, 0];
+  scores = [0, 0];
+  teamSizes = [0, 0];
+  BinalScore = [0, 0]; // Initialize BinalScore array
+
+  const assignedRunners = new Set(); // Track assigned runners to ensure no more than 1 per team
+
+  // Assign each of the top 2 players to a different team with randomness.
+  for (let i = 0; i < 2; i++) {
+    const currentPlayer = players[i];
+    let randomTeamIndex = Math.floor(Math.random() * 2); // Generate a random team index
+    while (teamSizes[randomTeamIndex] >= 1 || assignedRunners.has(randomTeamIndex)) {
+      // If the team already has a player or the team has been assigned a runner already, find another random team index
+      randomTeamIndex = Math.floor(Math.random() * 2);
+    }
+    teams[randomTeamIndex].push(currentPlayer);
+    scores[randomTeamIndex] += currentPlayer.Score;
+    throwersScore[randomTeamIndex] += currentPlayer.Thrower;
+    runnersScore[randomTeamIndex] += currentPlayer.Runner;
+    teamSizes[randomTeamIndex]++;
+    BinalScore[randomTeamIndex] += currentPlayer.Binal; // Add currentPlayer's Binal to the corresponding team's BinalScore
+    assignedRunners.add(randomTeamIndex); // Add the assigned runner to the set
+  }
+
+  // Now sort the remaining players by their thrower score.
+  const remainingPlayers = players.slice(2).sort((a, b) => b.Thrower - a.Thrower);
+
+  // Shuffle the remaining players
+  shuffleArray(remainingPlayers);
+
+  for (let i = 0; i < remainingPlayers.length; i++) {
+    const currentPlayer = remainingPlayers[i];
+    const lowestScoreTeamIndex = scores.indexOf(Math.min(...scores));
+    teams[lowestScoreTeamIndex].push(currentPlayer);
+    scores[lowestScoreTeamIndex] += currentPlayer.Score;
+    throwersScore[lowestScoreTeamIndex] += currentPlayer.Thrower;
+    runnersScore[lowestScoreTeamIndex] += currentPlayer.Runner;
+    teamSizes[lowestScoreTeamIndex]++;
+    BinalScore[lowestScoreTeamIndex] += currentPlayer.Binal; // Add currentPlayer's Binal to the corresponding team's BinalScore
+  }
+
+  scoresDiff = Math.abs(Math.min(...scores) - Math.max(...scores));
+  runnersDiff = Math.abs(Math.min(...runnersScore) - Math.max(...runnersScore));
+  teamSizesDiff = Math.abs(Math.min(...teamSizes) - Math.max(...teamSizes));
+  BinalDiff = Math.abs(Math.min(...BinalScore) - Math.max(...BinalScore)); // Calculate the BinalDiff based on the teams' BinalScores
+
+  if (j >= maxIterations) {
+    // Increase the thresholds by 0.25
+    runnersDiffThreshold += 0.25;
+    scoresDiffThreshold += 0.25;
+    BinalDiffThreshold += 0.25;
+    // Reset the iteration counter
+    j = 0;
+    // Increment the R counter
+    R++;
+  }
+}
+
+const allPlayers = players.map((player, index) => [player.Name, player.Score, teams.findIndex(team => team.includes(player)) + 1]);
+
+const playerNames = allPlayers.map(player => player[0]);
+const playerScores = allPlayers.map(player => player[1]);
+const playerTeamNumbers = allPlayers.map(player => player[2]);
+const ID = Array.from({ length: allPlayers.length }, (_, index) => index + 1);
+
+throwersScore = throwersScore.map(score => Math.round(score * 10) / 10);
+runnersScore = runnersScore.map(score => Math.round(score * 10) / 10);
+scores = scores.map(score => Math.round(score * 10) / 10);
+
+teams[0].sort((a, b) => b.Score - a.Score);
+teams[1].sort((a, b) => b.Score - a.Score);
+
+//shuffleArray(teams[0]);
+//shuffleArray(teams[1]);
+
+return {
+  team1: teams[0],
+  team2: teams[1],
+  scores: scores,
+  throwersScore: throwersScore,
+  runnersScore: runnersScore,
+  scoresDiff: scoresDiff,
+  runnersDiff: runnersDiff,
+  teamSizesDiff: teamSizesDiff,
+  BinalScore: BinalScore,
+  BinalDiff: BinalDiff,
+  playerNames: playerNames,
+  playerScores: playerScores,
+  playerTeamNumbers: playerTeamNumbers,
+  ID: ID,
+  j: j,
+  R: R
+};
+
+``
+
+
+
+
+
+
 7/3
 
 let players = playerTable.data.filter(player => player.Present);
